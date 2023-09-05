@@ -1,8 +1,8 @@
-import { MsgReceiverCtx } from "../../src/cross-end-call/msg-receiver-ctx";
-import { MsgReceiver, MsgHandler } from "../../src/domain/msg-receiver";
+import { MsgReceiverCtx } from "@/cross-end-call/msg-receiver-ctx";
+import { MsgReceiver, MsgHandler } from "@/domain/msg-receiver";
 
 describe("MsgReceiveCtx", () => {
-  test("[Normal] MsgReceiveCtx::receive", () => {
+  test("[Normal] MsgReceiveCtx::receive", (done) => {
     const testObjStr = JSON.stringify({ a: 1, b: 2, c: { b: 3 } });
 
     const msgReceiver: MsgReceiver = (msgHandler: MsgHandler) => {
@@ -12,6 +12,7 @@ describe("MsgReceiveCtx", () => {
 
     msgReceiveCtx.receive((msg) => {
       expect(msg).toEqual(JSON.parse(testObjStr));
+      done();
     });
   });
 
@@ -25,6 +26,7 @@ describe("MsgReceiveCtx", () => {
 
     try {
       msgReceiveCtx.receive(() => {});
+      throw new Error();
     } catch (error) {
       expect(String(error)).toMatch("[Receive message parse failed]");
     }
