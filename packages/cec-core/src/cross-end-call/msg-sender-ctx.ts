@@ -1,3 +1,4 @@
+import CircularJSON from "circular-json";
 import { MsgSender } from "@/domain/msg-sender";
 
 export class MsgSenderCtx {
@@ -5,7 +6,7 @@ export class MsgSenderCtx {
 
   send = <Msg>(msg: Msg) => {
     try {
-        const str = JSON.stringify(msg);
+        const str = CircularJSON.stringify(msg);
         this.sender(str);
       } catch (error: any) {
         throw new Error("[Send message stringify failed]: " + error.toString());

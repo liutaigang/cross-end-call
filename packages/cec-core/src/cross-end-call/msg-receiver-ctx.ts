@@ -1,3 +1,4 @@
+import CircularJSON from "circular-json";
 import { MsgHandler, MsgReceiver } from "@/domain/msg-receiver";
 
 export class MsgReceiverCtx {
@@ -6,7 +7,7 @@ export class MsgReceiverCtx {
   receive = (handler: MsgHandler) => {
     return this.receiver((msg: string) => {
       try {
-        const obj = JSON.parse(msg);
+        const obj = CircularJSON.parse(msg);
         handler(obj);
       } catch (error: any) {
         throw new Error("[Receive message parse failed]: " + error.toString());
