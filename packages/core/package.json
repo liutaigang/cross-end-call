@@ -1,8 +1,8 @@
 {
-  "name": "cec-core",
+  "name": "@cec/core",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "public-api.ts",
   "scripts": {
     "test": "jest"
   },

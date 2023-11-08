@@ -1,8 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
-import { Deferred } from "@/domain/deferred";
+import { Deferred } from "@/util/deferred";
+import { toType } from "@/util/to-type";
 import { MsgReceiver } from "@/domain/msg-receiver";
 import { MsgSender } from "@/domain/msg-sender";
-import { toType } from "@/util/to-type";
+import {
+  CallHandler,
+  ICrossEndCall,
+  ReplyReception,
+} from "@/domain/corss-end-call";
 import { MsgReceiverCtx } from "@/cross-end-call/msg-receiver-ctx";
 import { MsgSenderCtx } from "@/cross-end-call/msg-sender-ctx";
 
@@ -12,9 +17,11 @@ type CallReception<T> = {
   clearTimer: () => void;
 };
 
+type CallType = "PROMISE_CALL" | "PROMISE_RESOLVE" | "PROMISE_REJECT";
+
 type Msg = {
   uid: string;
-  callType: "PROMISE_CALL" | "PROMISE_RESOLVE" | "PROMISE_REJECT";
+  callType: CallType;
 };
 
 type CallMsg<Params> = Msg & {
@@ -25,38 +32,6 @@ type CallMsg<Params> = Msg & {
 type ReplyMsg = Msg & {
   returnVal: unknown;
 };
-
-export type CallHandler<Params, ReplyVal> = (
-  params: Params
-) => Promise<ReplyVal>;
-
-export type ReplyReception = {
-  cancelReply: () => void;
-};
-
-export interface ICrossEndCall {
-  /**
-   * 调用“跨端方法”
-   * @param method 方法名称
-   * @param params 方法参数
-   * @param timeout 调用超时时间
-   * @returns 调用结果 (Promise)
-   */
-  call: <Params, RespnoseVal>(
-    method: string,
-    params: Params,
-    timeout?: number
-  ) => Promise<RespnoseVal>;
-  /**
-   *等待被调用
-   * @param method 方法名称
-   * @param callHandler 方法的逻辑处理(调用处理逻辑)
-   */
-  reply: <Params, ReplyVal>(
-    method: string,
-    callHandler: CallHandler<Params, ReplyVal>
-  ) => ReplyReception;
-}
 
 export class CrossEndCall implements ICrossEndCall {
   static DEFAULT_CALL_TIME_OUT = 3000;
@@ -79,7 +54,7 @@ export class CrossEndCall implements ICrossEndCall {
     const uid = uuidv4();
     const { reject, resolve, promise } = new Deferred<RespnoseVal>();
     const timer = setTimeout(() => {
-      this.callReceptionMap.delete(uid); // 超时释放
+      this.callReceptionMap.delete(uid);
       reject(new Error(`Method ${method} has called fail, reason: timeout`));
     }, timeout);
     const clearTimer = () => clearTimeout(timer);
@@ -111,7 +86,6 @@ export class CrossEndCall implements ICrossEndCall {
       const { uid, callType } = msg as Msg;
 
       if (callType === "PROMISE_CALL") {
-        // 避免公有通道的消息混乱
         if (this.callReceptionMap.has(uid)) {
           return;
         }
@@ -152,7 +126,6 @@ export class CrossEndCall implements ICrossEndCall {
       }
 
       if (callType === "PROMISE_RESOLVE" || callType === "PROMISE_REJECT") {
-        // 作用: 1、因为 uid 的唯一性，可以保证的消息混乱;2、超时后 ReplyRecetion被释放后找不到
         if (!this.callReceptionMap.has(uid)) {
           return;
         }

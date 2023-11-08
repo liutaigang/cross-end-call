@@ -26,7 +26,7 @@ describe("MsgSenderCtx", () => {
 
     try {
       msgSenderCtx.send(a);
-      throw new Error('ok');
+      throw new Error("ok");
     } catch (error) {
       expect(String(error)).toMatch("ok");
     }

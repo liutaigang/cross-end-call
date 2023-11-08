@@ -1,7 +1,7 @@
 import { Subject } from "rxjs";
 import { MsgReceiver, MsgHandler } from "@/domain/msg-receiver";
 import { CrossEndCall } from "@/cross-end-call";
-import { Deferred } from "@/domain/deferred";
+import { Deferred } from "@/util/deferred";
 
 describe("CorssEndCall", () => {
   let messageBus: Subject<any>;
@@ -70,7 +70,7 @@ describe("CorssEndCall", () => {
   test("[Error: not return Promise] CorssEndCall", (done) => {
     const replyEnd = new CrossEndCall(msgSender, msgReceiver);
     replyEnd.reply("onCallMothed", () => {
-      return 'Promise.resolve()' as any;
+      return "Promise.resolve()" as any;
     });
 
     const callEnd = new CrossEndCall(msgSender, msgReceiver);

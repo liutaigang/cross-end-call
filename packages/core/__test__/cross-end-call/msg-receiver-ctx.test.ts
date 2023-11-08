@@ -16,7 +16,7 @@ describe("MsgReceiveCtx", () => {
     });
   });
 
-  test("[Error] MsgReceiveCtx::receive", () => {
+  test("[Error] MsgReceiveCtx::receive", async () => {
     const cannotPrase = { a: 1, b: 2, c: { b: 3 } };
 
     const msgReceiver: MsgReceiver = (msgHandler: MsgHandler) => {
