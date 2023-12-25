@@ -1,3 +1,3 @@
-export interface MsgSender<Msg = any> {
-  (msg: Msg): void;
+export interface MsgSender<MsgBody = any> {
+  (msg: MsgBody): void;
 }

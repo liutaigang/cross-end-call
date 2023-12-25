@@ -2,7 +2,6 @@
   "name": "@cec/core",
   "version": "1.0.0",
   "description": "",
-  "main": "public-api.ts",
   "scripts": {
     "test": "jest"
   },

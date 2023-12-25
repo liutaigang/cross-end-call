@@ -11,6 +11,10 @@ import {
 import { MsgReceiverCtx } from "@/cross-end-call/msg-receiver-ctx";
 import { MsgSenderCtx } from "@/cross-end-call/msg-sender-ctx";
 
+export type CecConfig = {
+  timeout: number;
+};
+
 type CallReception<T> = {
   resolve: Deferred<T>["resolve"];
   reject: Deferred<T>["reject"];
@@ -24,9 +28,9 @@ type Msg = {
   callType: CallType;
 };
 
-type CallMsg<Params> = Msg & {
+type CallMsg = Msg & {
   method: string;
-  params: Params;
+  args: any[];
 };
 
 type ReplyMsg = Msg & {
@@ -36,43 +40,44 @@ type ReplyMsg = Msg & {
 export class CrossEndCall implements ICrossEndCall {
   static DEFAULT_CALL_TIME_OUT = 3000;
   private callReceptionMap = new Map<string, CallReception<any>>();
-  private callHandlerMap = new Map<string, CallHandler<any, any>>();
+  private callHandlerMap = new Map<string, CallHandler>();
 
   private sendCtx: MsgSenderCtx;
   private receiveCtx: MsgReceiverCtx;
-  constructor(private msgSender: MsgSender, private msgReceiver: MsgReceiver) {
+
+  constructor(
+    private msgSender: MsgSender,
+    private msgReceiver: MsgReceiver,
+    private config?: CecConfig
+  ) {
     this.sendCtx = new MsgSenderCtx(this.msgSender);
     this.receiveCtx = new MsgReceiverCtx(this.msgReceiver);
     this.handleCallAndReply();
   }
 
-  call = <Params, RespnoseVal>(
-    method: string,
-    params: Params,
-    timeout = CrossEndCall.DEFAULT_CALL_TIME_OUT
-  ) => {
+  call = <ReplyVal>(method: string, ...args: any[]) => {
     const uid = uuidv4();
-    const { reject, resolve, promise } = new Deferred<RespnoseVal>();
+    const { reject, resolve, promise } = new Deferred<ReplyVal>();
+
+    const delayTime = this?.config?.timeout ?? CrossEndCall.DEFAULT_CALL_TIME_OUT;
     const timer = setTimeout(() => {
       this.callReceptionMap.delete(uid);
       reject(new Error(`Method ${method} has called fail, reason: timeout`));
-    }, timeout);
+    }, delayTime);
     const clearTimer = () => clearTimeout(timer);
     this.callReceptionMap.set(uid, { reject, resolve, clearTimer });
-    const callMsg: CallMsg<Params> = {
+
+    const callMsg: CallMsg = {
       uid,
       method,
       callType: "PROMISE_CALL",
-      params,
+      args,
     };
     this.sendCtx.send(callMsg)!;
     return promise;
   };
 
-  reply = <Params, ReplyVal>(
-    method: string,
-    callHandler: CallHandler<Params, ReplyVal>
-  ): ReplyReception => {
+  reply = (method: string, callHandler: CallHandler): ReplyReception => {
     this.callHandlerMap.set(method, callHandler);
     return {
       cancelReply: () => {
@@ -90,7 +95,7 @@ export class CrossEndCall implements ICrossEndCall {
           return;
         }
 
-        const { method, params } = msg as CallMsg<any>;
+        const { method, args } = msg as CallMsg;
         const callHandler = this.callHandlerMap.get(method);
         if (!callHandler) {
           this.sendError(
@@ -100,29 +105,31 @@ export class CrossEndCall implements ICrossEndCall {
           return;
         }
 
-        const promise = callHandler.call(this, params);
-        if (toType(promise) !== "promise") {
-          this.sendError(
-            msg as Msg,
-            `The return value of method [${method}] is not of the Promise type`
-          );
-          return;
-        }
+        const result = callHandler.apply(this, args);
 
-        const reply: ReplyMsg = {} as any;
-        promise
-          .then((res) => {
-            reply.returnVal = res;
-            reply.callType = "PROMISE_RESOLVE";
-          })
-          .catch((err) => {
-            reply.returnVal = err.toString();
-            reply.callType = "PROMISE_REJECT";
-          })
-          .finally(() => {
-            reply.uid = uid;
-            this.sendCtx.send(reply);
-          });
+        if (toType(result) === "promise") {
+          const reply: ReplyMsg = {} as any;
+          result
+            .then((res: any) => {
+              reply.returnVal = res;
+              reply.callType = "PROMISE_RESOLVE";
+            })
+            .catch((err: Error) => {
+              reply.returnVal = err.toString();
+              reply.callType = "PROMISE_REJECT";
+            })
+            .finally(() => {
+              reply.uid = uid;
+              this.sendCtx.send(reply);
+            });
+        } else {
+          const reply: ReplyMsg = {
+            returnVal: result,
+            callType: "PROMISE_RESOLVE",
+            uid,
+          };
+          this.sendCtx.send(reply);
+        }
       }
 
       if (callType === "PROMISE_RESOLVE" || callType === "PROMISE_REJECT") {
