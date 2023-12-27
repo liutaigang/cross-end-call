@@ -1,3 +1,4 @@
+import { stringify } from "flatted";
 import { MsgSenderCtx } from "@/cross-end-call/msg-sender-ctx";
 import { MsgSender } from "@/domain/msg-sender";
 
@@ -6,7 +7,7 @@ describe("MsgSenderCtx", () => {
     const msgBody = { a: 1, b: 2, c: { b: 3 } };
 
     const msgSender: MsgSender = (msg) => {
-      const msgBodyStr = JSON.stringify(msgBody);
+      const msgBodyStr = stringify(msgBody);
       expect(msg).toEqual(msgBodyStr);
       done();
     };

@@ -1,5 +1,5 @@
 {
-  "name": "@cec/core",
+  "name": "@cec/client-server",
   "version": "1.0.0",
   "author": "liutaigang",
   "description": "A simple cross-end call library, which does not implement any protocol, can be used for inter-process capability calls",
@@ -26,10 +26,6 @@
     "build:dts": "rollup -c --environment NODE_ENV:dts"
   },
   "dependencies": {
-    "flatted": "^3.2.9",
-    "uuid": "^9.0.0"
-  },
-  "devDependencies": {
-    "@types/uuid": "^9.0.2"
+    "@cec/core": "workspace:*"
   }
 }

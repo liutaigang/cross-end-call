@@ -3,19 +3,19 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist",
-    "target": "es2017",
+    "target": "esnext",
+    "module": "esnext",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "exclude": ["./dist/**/*"]
+  "include": ["./src"]
 }

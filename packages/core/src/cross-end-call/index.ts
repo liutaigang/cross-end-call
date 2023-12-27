@@ -38,7 +38,7 @@ type ReplyMsg = Msg & {
 };
 
 export class CrossEndCall implements ICrossEndCall {
-  static DEFAULT_CALL_TIME_OUT = 3000;
+  static DEFAULT_CALL_TIME_OUT = 36000;
   private callReceptionMap = new Map<string, CallReception<any>>();
   private callHandlerMap = new Map<string, CallHandler>();
 
@@ -59,7 +59,8 @@ export class CrossEndCall implements ICrossEndCall {
     const uid = uuidv4();
     const { reject, resolve, promise } = new Deferred<ReplyVal>();
 
-    const delayTime = this?.config?.timeout ?? CrossEndCall.DEFAULT_CALL_TIME_OUT;
+    const delayTime =
+      this?.config?.timeout ?? CrossEndCall.DEFAULT_CALL_TIME_OUT;
     const timer = setTimeout(() => {
       this.callReceptionMap.delete(uid);
       reject(new Error(`Method ${method} has called fail, reason: timeout`));

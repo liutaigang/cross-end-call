@@ -1,9 +1,10 @@
+import { stringify, parse } from "flatted";
 import { MsgReceiverCtx } from "@/cross-end-call/msg-receiver-ctx";
 import { MsgReceiver, MsgHandler } from "@/domain/msg-receiver";
 
 describe("MsgReceiveCtx", () => {
   test("[Normal] MsgReceiveCtx::receive", (done) => {
-    const testObjStr = JSON.stringify({ a: 1, b: 2, c: { b: 3 } });
+    const testObjStr = stringify({ a: 1, b: 2, c: { b: 3 } });
 
     const msgReceiver: MsgReceiver = (msgHandler: MsgHandler) => {
       msgHandler(testObjStr);
@@ -11,7 +12,7 @@ describe("MsgReceiveCtx", () => {
     const msgReceiveCtx = new MsgReceiverCtx(msgReceiver);
 
     msgReceiveCtx.receive((msg) => {
-      expect(msg).toEqual(JSON.parse(testObjStr));
+      expect(msg).toEqual(parse(testObjStr));
       done();
     });
   });

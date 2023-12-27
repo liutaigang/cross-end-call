@@ -33,6 +33,36 @@ describe("CorssEndCall", () => {
     });
   });
 
+  test("[Normal: not return Promise] CorssEndCall", (done) => {
+    const replyEnd = new CrossEndCall(msgSender, msgReceiver);
+    replyEnd.reply("onCallMothed", () => {
+      return "string";
+    });
+
+    const callEnd = new CrossEndCall(msgSender, msgReceiver);
+    callEnd.call("onCallMothed", "Hello CorssEndCall").then((res: any) => {
+      expect(res).toEqual("string");
+      done();
+    });
+  });
+
+  test("[Normal: mutli args] CorssEndCall", (done) => {
+    const replyEnd = new CrossEndCall(msgSender, msgReceiver);
+    replyEnd.reply("onCallMothed", (arg1: string, arg2: string) => {
+      return {
+        isAns: true,
+        arg1,
+        arg2,
+      };
+    });
+
+    const callEnd = new CrossEndCall(msgSender, msgReceiver);
+    callEnd.call("onCallMothed", "a", "b").then((res: any) => {
+      expect(res.arg2).toMatch("b");
+      done();
+    });
+  });
+
   test("[Timeout] CorssEndCall", (done) => {
     const REPLY_WAIT_TIME = 1000;
     const CALL_TIMEOUT = 999;
@@ -45,13 +75,13 @@ describe("CorssEndCall", () => {
       return promise;
     });
 
-    const callEnd = new CrossEndCall(msgSender, msgReceiver);
-    callEnd
-      .call("onCallMothed", "Hello CorssEndCall", CALL_TIMEOUT)
-      .catch((err: any) => {
-        expect(err.toString()).toMatch("timeout");
-        done();
-      });
+    const callEnd = new CrossEndCall(msgSender, msgReceiver, {
+      timeout: CALL_TIMEOUT,
+    });
+    callEnd.call("onCallMothed", "Hello CorssEndCall").catch((err: any) => {
+      expect(err.toString()).toMatch("timeout");
+      done();
+    });
   });
 
   test("[Error: without handler] CorssEndCall", (done) => {
@@ -63,19 +93,6 @@ describe("CorssEndCall", () => {
     const callEnd = new CrossEndCall(msgSender, msgReceiver);
     callEnd.call("_", "Hello CorssEndCall").catch((err: any) => {
       expect(err.toString()).toMatch("not have a corresponding handler");
-      done();
-    });
-  });
-
-  test("[Error: not return Promise] CorssEndCall", (done) => {
-    const replyEnd = new CrossEndCall(msgSender, msgReceiver);
-    replyEnd.reply("onCallMothed", () => {
-      return "Promise.resolve()" as any;
-    });
-
-    const callEnd = new CrossEndCall(msgSender, msgReceiver);
-    callEnd.call("onCallMothed", "Hello CorssEndCall").catch((err: any) => {
-      expect(err.toString()).toMatch("not of the Promise type");
       done();
     });
   });
