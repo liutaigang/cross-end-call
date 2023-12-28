@@ -1,9 +1,11 @@
 import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
 import typescript from 'rollup-plugin-typescript2'
 import dts from 'rollup-plugin-dts'
-import commonjs from 'rollup-plugin-commonjs'
 import merge from 'rollup-merge-config'
-import pkg from './package.json' with { type: "json" }
+import { readFileSync } from 'fs'
+
+const pkg = JSON.parse(readFileSync('./package.json'))
 
 // 打包任务的个性化配置
 const jobs = {
@@ -14,7 +16,7 @@ const jobs = {
         output: { format: 'esm', file: pkg.module, },
     },
     dts: {
-        output: { file: pkg.typings, format: "es" },
+        output: { format: "es", file: pkg.typings },
         plugins: [dts()]
     }
 }
