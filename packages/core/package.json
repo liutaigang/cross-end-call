@@ -1,15 +1,15 @@
 {
-  "name": "@cec/core",
+  "name": "cec-core",
   "version": "1.0.0",
   "author": "liutaigang",
   "description": "A simple cross-end call library, which does not implement any protocol, can be used for inter-process capability calls",
-  "main": "./lib/index.cjs.js",
-  "module": "./lib/index.esm.js",
-  "typings": "./lib/index.d.ts",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.esm.js",
+  "typings": "./dist/index.d.ts",
   "keywords": [],
   "license": "ISC",
   "files": [
-    "lib/"
+    "dist/"
   ],
   "publishConfig": {
     "access": "public"
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "rimraf lib/ && run-p build:esm build:cjs build:dts",
+    "build": "rimraf dist/ && run-p build:esm build:cjs build:dts",
     "build:esm": "rollup -c --environment NODE_ENV:esm",
     "build:cjs": "rollup -c --environment NODE_ENV:cjs",
     "build:dts": "rollup -c --environment NODE_ENV:dts"
