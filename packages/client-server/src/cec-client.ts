@@ -4,9 +4,10 @@ import {
   MsgReceiver,
   MsgSender,
   ReplyReception,
-} from "@cec/core";
+} from "cec-core";
 
 export type SubscribleCancel = () => void;
+export type MsgObserver = (value: any) => void;
 
 export class CecClient {
   private crossEndCall: CrossEndCall;
@@ -34,7 +35,7 @@ export class CecClient {
     return this.crossEndCall.call(name, ...args);
   }
 
-  subscrible(name: string, observer: (value: any) => void): SubscribleCancel {
+  subscrible(name: string, observer: MsgObserver): SubscribleCancel {
     if (this.observerMap.has(name)) {
       this.observerMap.get(name)?.observers.add(observer);
     } else {

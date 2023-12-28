@@ -1,7 +1,10 @@
-import { CrossEndCall, MsgSender, MsgReceiver } from "@cec/core";
+import { CrossEndCall, MsgSender, MsgReceiver, CallHandler } from "cec-core";
 
 export type OnCallCancel = () => void;
 export type OnSubscribeCancel = () => void;
+export type SubscribleHandler = (
+  next: (value: any) => void
+) => OnSubscribeCancel;
 
 export class CecServer {
   private crossEndCall: CrossEndCall;
@@ -10,14 +13,14 @@ export class CecServer {
     this.crossEndCall = new CrossEndCall(this.msgSender, this.msgReceiver);
   }
 
-  onCall(name: string, callHandler: (...args: any[]) => any): OnCallCancel {
+  onCall(name: string, callHandler: CallHandler): OnCallCancel {
     const reception = this.crossEndCall.reply(name, callHandler);
     return reception.cancelReply;
   }
 
   onSubscribe(
     name: string,
-    subscribleHandler: (next: (value: any) => void) => OnSubscribeCancel
+    subscribleHandler: SubscribleHandler
   ): OnSubscribeCancel {
     const next = (value: any) => {
       this.crossEndCall.call(name, value);
