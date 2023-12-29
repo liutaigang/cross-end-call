@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { uuid } from "@/util/uuid";
 import { Deferred } from "@/util/deferred";
 import { toType } from "@/util/to-type";
 import { MsgReceiver } from "@/domain/msg-receiver";
@@ -56,7 +56,7 @@ export class CrossEndCall implements ICrossEndCall {
   }
 
   call = <ReplyVal>(method: string, ...args: any[]) => {
-    const uid = uuidv4();
+    const uid = uuid();
     const { reject, resolve, promise } = new Deferred<ReplyVal>();
 
     const delayTime =
@@ -106,7 +106,7 @@ export class CrossEndCall implements ICrossEndCall {
           return;
         }
 
-        const result = callHandler.apply(this, args);
+        const result = callHandler.apply({}, args);
 
         if (toType(result) === "promise") {
           const reply: ReplyMsg = {} as any;

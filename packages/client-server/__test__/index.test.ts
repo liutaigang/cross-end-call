@@ -95,4 +95,23 @@ describe("CorssEndCall", () => {
       });
     });
   });
+
+  test("[Duplicate Name] CorssEndCall Server/Client in Subscribe&Call", (done) => {
+    cecServer.onCall("sameName", () => {
+      return "call_samename";
+    });
+    cecServer.onSubscribe("sameName", (next) => {
+      const timer = setTimeout(() => next("subscribe_samename"), 1000);
+      return () => {
+        clearTimeout(timer);
+      };
+    });
+    cecClient.subscrible("sameName", (value) => {
+      expect(value).toEqual("subscribe_samename");
+      setTimeout(done, 500);
+    });
+    cecClient.call("sameName").then((res) => {
+      expect(res).toEqual("call_samename");
+    });
+  });
 });

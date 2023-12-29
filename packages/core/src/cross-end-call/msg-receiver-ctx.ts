@@ -5,10 +5,9 @@ export class MsgReceiverCtx {
   constructor(private receiver: MsgReceiver) {}
 
   receive = (handler: MsgHandler) => {
-    return this.receiver((msg: string) => {
+    return this.receiver.call({}, (msg: string) => {
       try {
-        const obj = parse(msg);
-        handler(obj);
+        handler.call({}, parse(msg));
       } catch (error: any) {
         throw new Error("[Receive message parse failed]: " + error.toString());
       }
