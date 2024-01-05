@@ -1,6 +1,6 @@
 {
   "name": "cec-client-server",
-  "version": "1.1.1",
+  "version": "1.2.1",
   "author": "liutaigang",
   "description": "A simple cross-end call library, which does not implement any protocol, can be used for inter-process capability calls",
   "main": "./dist/index.cjs.js",

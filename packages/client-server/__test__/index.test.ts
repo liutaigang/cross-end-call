@@ -1,6 +1,6 @@
 import { Subject } from "rxjs";
-import { CecClient } from "@/cec-client";
-import { CecServer } from "@/cec-server";
+import { CecClient } from "../src/cec-client";
+import { CecServer } from "../src/cec-server";
 
 describe("CorssEndCall", () => {
   let cecClient: CecClient;
@@ -81,11 +81,17 @@ describe("CorssEndCall", () => {
       return () => {};
     });
 
-    const cancel = cecClient.subscrible("notify", (value) => {
+    const cancel01 = cecClient.subscrible("notify", (value) => {
       expect(value).toEqual("xxx");
       count++;
     });
-    cancel();
+    setTimeout(cancel01);
+
+    const cancel02 = cecClient.subscrible("notify", (value) => {
+      expect(value).toEqual("xxx");
+      count++;
+    });
+    setTimeout(cancel02, 999);
 
     cecClient.subscrible("notify", () => {
       count++;
@@ -113,5 +119,35 @@ describe("CorssEndCall", () => {
     cecClient.call("sameName").then((res) => {
       expect(res).toEqual("call_samename");
     });
+  });
+
+  test("[With Arguments] CorssEndCall Server/Client in Subscribe", (done) => {
+    const name = "notify";
+
+    cecServer.onSubscribe(name, (next, ...args: string[]) => {
+      const timer = setTimeout(() => next(name + args.join("")), 1000);
+      return () => {
+        clearTimeout(timer);
+      };
+    });
+
+    const args01 = ["1", "2", "3"];
+    cecClient.subscrible(
+      name,
+      (value) => {
+        expect(value).toEqual(name + args01.join(""));
+      },
+      ...args01
+    );
+
+    const args02 = ["x", "y", "z"];
+    cecClient.subscrible(
+      name,
+      (value) => {
+        expect(value).toEqual(name + args02.join(""));
+        setTimeout(done);
+      },
+      ...args02
+    );
   });
 });

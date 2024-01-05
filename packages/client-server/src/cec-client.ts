@@ -14,7 +14,7 @@ export class CecClient {
   private observerMap: Map<
     string,
     {
-      observers: Set<(value: any) => void>;
+      observers: Map<string, MsgObserver>;
       reception: ReplyReception;
     }
   > = new Map();
@@ -35,33 +35,54 @@ export class CecClient {
     return this.crossEndCall.call(name, ...args);
   }
 
-  subscrible(name: string, observer: MsgObserver): SubscribleCancel {
-    if (this.observerMap.has(name)) {
-      this.observerMap.get(name)?.observers.add(observer);
-    } else {
-      const notifyAllObservers = (value: any) => {
-        const observers = this.observerMap.get(name)?.observers ?? [];
-        for (const observ of observers) {
-          observ.call({}, value);
+  subscrible(
+    name: string,
+    observer: MsgObserver,
+    ...args: any[]
+  ): SubscribleCancel {
+    let subscribleCancel = () => {};
+
+    const toSubsscrible = (subscribeId: string) => {
+      if (this.observerMap.has(name)) {
+        this.observerMap.get(name)?.observers.set(subscribeId, observer);
+      } else {
+        const notifyAllObservers = (
+          values: {
+            subscribeValue: any;
+            subscribeId: string;
+          }[]
+        ) => {
+          for (const { subscribeValue, subscribeId } of values) {
+            const observersMap = this.observerMap.get(name)?.observers;
+            observersMap?.get(subscribeId)?.call({}, subscribeValue);
+          }
+        };
+        const reception = this.crossEndCall.reply(name, notifyAllObservers);
+        this.observerMap.set(name, {
+          observers: new Map([[subscribeId, observer]]),
+          reception,
+        });
+      }
+
+      subscribleCancel = () => {
+        if (this.observerMap.has(name)) {
+          const observers = this.observerMap.get(name)?.observers;
+          if (observers) observers.delete(subscribeId);
+          if (observers?.size === 0) {
+            this.observerMap.get(name)?.reception.cancelReply();
+            this.observerMap.delete(name);
+          }
         }
       };
-      const reception = this.crossEndCall.reply(name, notifyAllObservers);
-      this.observerMap.set(name, {
-        observers: new Set([observer]),
-        reception,
-      });
-    }
+    };
 
-    return () => {
-      if (this.observerMap.has(name)) {
-        const observers = this.observerMap.get(name)?.observers ?? new Set();
-        observers.delete(observer);
+    const forSubscrible = `${name}.forSubscrible`;
+    const callPromse = this.crossEndCall.call(forSubscrible, args);
+    callPromse.then((subscribeId) => toSubsscrible(subscribeId as string));
 
-        if (observers.size === 0) {
-          this.observerMap.get(name)?.reception.cancelReply();
-          this.observerMap.delete(name);
-        }
-      }
+    return async () => {
+      await callPromse;
+      subscribleCancel();
     };
   }
 }
