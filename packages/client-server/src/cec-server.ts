@@ -26,7 +26,6 @@ export class CecServer {
     subscribleHandler: SubscribleHandler
   ): OnSubscribeCancel {
     const onSubscribeCancelList: OnSubscribeCancel[] = [];
-
     const callMsgCache = new Set<any>();
     let callMsgCacheTimer: any = -1;
 
@@ -39,12 +38,12 @@ export class CecServer {
         clearTimeout(callMsgCacheTimer);
         callMsgCacheTimer = setTimeout(() => {
           this.crossEndCall.call(name, Array.from(callMsgCache));
-          callMsgCache.clear()
+          callMsgCache.clear();
         }, CecServer.CALL_MSG_CACHE_DELAY);
       };
 
-      const onSubscribeCance = subscribleHandler.call({}, next, ...args);
-      onSubscribeCancelList.push(onSubscribeCance);
+      const onSubscribeCancel = subscribleHandler.call({}, next, ...args);
+      onSubscribeCancelList.push(onSubscribeCancel);
       return subscribeId;
     };
 
