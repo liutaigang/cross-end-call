@@ -91,11 +91,6 @@ pnpm build
 
 **注意：** 需要先安装 pnpm ：`npm i pnpm -g`
 
-# More examples
-
-vscode webview 的完美、生产级示例：**[vscode-webview-extension-example](https://github.com/liutaigang/vscode-webview-extension-example)**
-
-
 
 # More examples
 
