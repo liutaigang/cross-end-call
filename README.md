@@ -1,4 +1,3 @@
-# Cross-end-call
 一个简单的跨端调用库，不实现任何协议，可用于端与端之间能力调用。可将`通信模型`转换为`方法调用模型`
 
 # Install
@@ -10,21 +9,23 @@ npm i cec-client-server
 # Example
 
 ```ts
-/********* Server 端 *******************************************/
+// Server 端
 import { CecServer } from "cec-client-server"
 
-const messageSender = (message) => {...}
+const messageSender = (message) => {...} 
 const messageReceiver = (messageHandler) => {...}
 const cecServer = new CecServer(messageSender, messageReceiver)
 
 // 声明一个可调用的“方法”
-cecServer.onCall('method', (...args: any[]) => {...})
+cecServer.onCall('XxxMethod', (...args: any[]) => {...})
 
 // 声明一个可订阅的“主题”
 const publisher = (next: (value) => void) => {...}
-cecServer.onSubscribe('subject', publisher)
+cecServer.onSubscribe('XxxSubject', publisher)
+```
 
-/********* Client 端 *******************************************/
+```ts
+// Client 端
 import { CecClient } from "cec-client-server"                                              
                                               
 const messageSender = (message) => {...}
@@ -32,14 +33,14 @@ const messageReceiver = (messageHandler) => {...}
 const cecClient = new CecClient(messageSender, messageReceiver)
 
 // 调用 Server 端已经声明好的 “方法”
-const res = await cecServer.call('method', param01, param02)
+const res = await cecServer.call('XxxMethod', param01, param02)
 
-// 订阅 Server 端已经定义好的 “主题”
+// 调用 Server 端已经定义好的 “主题”
 const observer = (value) => {...}
-cecServer.onSubscribe('subject', observer)
+cecServer.onSubscribe('XxxSubject', observer)
 ```
 
-上述的示例中，我们将 Server 端和 Client `消息的发送、接收`，转换为`方法调用`和`主题订阅`。在复杂场景下，这样的方式可使得代码逻辑简化
+上述的示例中，我们将 Server 端和 Client 端`消息的发送、接收`，转换为`方法调用`和`主题订阅`。在某些复杂场景下，这样的方式可使得代码逻辑简化
 
 # Example in vscode webview
 
@@ -89,6 +90,12 @@ pnpm build
 **最后**按 F5 开启 Vscode 调试，点击 activityBar 上的图标：<img src=https://raw.githubusercontent.com/liutaigang/cross-end-call/a15564f65713d58cdb8257d4e304312307eca08e/examples/simple-extension/assets/icon01.svg width=3% />
 
 **注意：** 需要先安装 pnpm ：`npm i pnpm -g`
+
+# More examples
+
+vscode webview 的完美、生产级示例：**[vscode-webview-extension-example](https://github.com/liutaigang/vscode-webview-extension-example)**
+
+
 
 # More examples
 
