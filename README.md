@@ -1,6 +1,12 @@
 # Cross-end-call
 一个简单的跨端调用库，不实现任何协议，可用于端与端之间能力调用。可将`通信模型`转换为`方法调用模型`
 
+# Install
+
+```
+npm i cec-client-server
+```
+
 # Example
 
 ```ts
@@ -28,7 +34,7 @@ const cecClient = new CecClient(messageSender, messageReceiver)
 // 调用 Server 端已经声明好的 “方法”
 const res = await cecServer.call('method', param01, param02)
 
-// 调用 Server 端已经定义好的 “主题”
+// 订阅 Server 端已经定义好的 “主题”
 const observer = (value) => {...}
 cecServer.onSubscribe('subject', observer)
 ```
