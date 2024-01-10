@@ -1,7 +1,7 @@
 {
   "name": "cross-end-call",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple cross-end calling library that does not implement any protocol and can be used to call capabilities between ends. Implement communication model into method calling model",
   "main": "index.js",
   "scripts": {
     "test": "run-p test:*",
