@@ -44,7 +44,8 @@
     "build": "rimraf dist/ && run-p build:esm build:cjs build:dts",
     "build:esm": "rollup -c --environment NODE_ENV:esm",
     "build:cjs": "rollup -c --environment NODE_ENV:cjs",
-    "build:dts": "rollup -c --environment NODE_ENV:dts"
+    "build:dts": "rollup -c --environment NODE_ENV:dts",
+    "clean": "rimraf dist/ & rimraf node_modules/"
   },
   "dependencies": {
     "cec-core": "^1.0.1",

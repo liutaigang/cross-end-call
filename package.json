@@ -9,7 +9,14 @@
     "test:client-server": "pnpm run -F cec-client-server test",
     "build": "run-s build:*",
     "build:core": "pnpm run -F cec-core build",
-    "build:client-server": "pnpm run -F cec-client-server build"
+    "build:client-server": "pnpm run -F cec-client-server build",
+    "build:simple-view-vue": "pnpm run -F simple-view-vue build",
+    "build:simple-extension": "pnpm run -F simple-extension compile",
+    "clean": "run-p clean:* && rm -rf node_modules",
+    "clean:core": "pnpm run -F cec-core clean",
+    "clean:client-server": "pnpm run -F cec-client-server clean",
+    "clean:simple-view-vue": "pnpm run -F simple-view-vue clean",
+    "clean:simple-extension": "pnpm run -F simple-extension clean"
   },
   "keywords": [],
   "author": "",
