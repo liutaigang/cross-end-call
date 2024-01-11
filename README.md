@@ -92,8 +92,10 @@ pnpm build
 **注意：** 需要先安装 pnpm ：`npm i pnpm -g`
 
 源码地址：
-extension 端：[https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-extension/src/panel-view-provider.ts]([https://github.com/liutaigang/vscode-webview-extension-example](https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-extension/src/panel-view-provider.ts))
-server 端：[https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-view-vue/src/hooks/use-cec-client.ts]([https://github.com/liutaigang/vscode-webview-extension-example](https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-view-vue/src/hooks/use-cec-client.ts))
+
+extension 端：[https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-extension/src/panel-view-provider.ts](https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-extension/src/panel-view-provider.ts)
+
+webview 端：[https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-view-vue/src/hooks/use-cec-client.ts](https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-view-vue/src/hooks/use-cec-client.ts)
 
 # More examples
 
