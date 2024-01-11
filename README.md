@@ -1,4 +1,4 @@
-一个简单的跨端调用库，不实现任何协议，可用于端与端之间的能力调用。可将`通信模型`转换为`方法调用模型`
+一个简单的跨端调用库，用于端与端之间的能力调用。可将端与端之间`消息的发送和接收`，转换为`方法调用`和`主题订阅`
 
 # Install
 
@@ -8,8 +8,8 @@ npm i cec-client-server
 
 # Example
 
-```ts
 // Server 端
+```ts
 import { CecServer } from "cec-client-server"
 
 const messageSender = (message) => {...} 
@@ -24,8 +24,8 @@ const publisher = (next: (value) => void) => {...}
 cecServer.onSubscribe('XxxSubject', publisher)
 ```
 
-```ts
 // Client 端
+```ts
 import { CecClient } from "cec-client-server"                                              
                                               
 const messageSender = (message) => {...}
@@ -94,5 +94,5 @@ pnpm build
 
 # More examples
 
-vscode webview 的完美、生产级示例：**[vscode-webview-extension-example](https://github.com/liutaigang/vscode-webview-extension-example)**
+vscode webview 的生产级示例：**[vscode-webview-extension-example](https://github.com/liutaigang/vscode-webview-extension-example)**
 
