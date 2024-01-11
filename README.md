@@ -79,7 +79,7 @@ cecClient.call('showInformationMessage', '你好，Vscode')
 
 ```
 
-运行完整的示例：
+**运行完整的示例：**
 
 ```shell
 git clone git@github.com:liutaigang/cross-end-call.git
@@ -91,6 +91,9 @@ pnpm build
 
 **注意：** 需要先安装 pnpm ：`npm i pnpm -g`
 
+源码地址：
+extension 端：[https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-extension/src/panel-view-provider.ts]([https://github.com/liutaigang/vscode-webview-extension-example](https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-extension/src/panel-view-provider.ts))
+server 端：[https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-view-vue/src/hooks/use-cec-client.ts]([https://github.com/liutaigang/vscode-webview-extension-example](https://github.com/liutaigang/cross-end-call/blob/main/examples/simple-view-vue/src/hooks/use-cec-client.ts))
 
 # More examples
 
