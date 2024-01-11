@@ -35,7 +35,7 @@ const cecClient = new CecClient(messageSender, messageReceiver)
 // 调用 Server 端已经声明好的 “方法”
 const res = await cecServer.call('XxxMethod', param01, param02)
 
-// 调用 Server 端已经定义好的 “主题”
+// 订阅 Server 端已经定义好的 “主题”
 const observer = (value) => {...}
 cecServer.onSubscribe('XxxSubject', observer)
 ```
