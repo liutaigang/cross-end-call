@@ -8,7 +8,7 @@ npm i cec-client-server
 
 # Example
 
-// Server 端
+Server 端
 ```ts
 import { CecServer } from "cec-client-server"
 
@@ -24,7 +24,7 @@ const publisher = (next: (value) => void) => {...}
 cecServer.onSubscribe('XxxSubject', publisher)
 ```
 
-// Client 端
+Client 端
 ```ts
 import { CecClient } from "cec-client-server"                                              
                                               
