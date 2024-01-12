@@ -47,7 +47,7 @@ cecServer.onSubscribe('XxxSubject', observer)
 extension 端示例
 
 ```ts
-import { CecServer } from "../src/cec-server";
+import { CecServer } from "cec-client-server";
 
 // 实例化一个 CecServer
 const cecServer = new CecServer(
