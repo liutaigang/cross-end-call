@@ -1,6 +1,6 @@
 {
   "name": "cec-client-server",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "author": "liutaigang",
   "description": "A simple cross-end call library, which does not implement any protocol, can be used for inter-process capability calls",
   "exports": {
