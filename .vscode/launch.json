@@ -9,23 +9,15 @@
       "name": "Run Extension",
       "type": "extensionHost",
       "request": "launch",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}/examples/simple-extension"
-      ],
-      "outFiles": [
-        "${workspaceFolder}/examples/simple-extension/out/extension/**/*.js"
-      ]
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}/examples/simple-extension"],
+      "outFiles": ["${workspaceFolder}/examples/simple-extension/out/extension/**/*.js"]
     },
     {
       "name": "Extension Tests",
       "type": "extensionHost",
       "request": "launch",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}/examples/simple-extension",
-      ],
-      "outFiles": [
-        "${workspaceFolder}/examples/simple-extension/out/test/extension/**/*.js"
-      ]
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}/examples/simple-extension"],
+      "outFiles": ["${workspaceFolder}/examples/simple-extension/out/test/extension/**/*.js"]
     }
   ]
 }

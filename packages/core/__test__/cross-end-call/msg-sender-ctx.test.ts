@@ -1,9 +1,9 @@
-import { stringify } from "flatted";
-import { MsgSenderCtx } from "@/cross-end-call/msg-sender-ctx";
-import { MsgSender } from "@/domain/msg-sender";
+import { stringify } from 'flatted';
+import { MsgSenderCtx } from '@/cross-end-call/msg-sender-ctx';
+import { MsgSender } from '@/domain/msg-sender';
 
-describe("MsgSenderCtx", () => {
-  test("[Normal] MsgSenderCtx.send", (done) => {
+describe('MsgSenderCtx', () => {
+  test('[Normal] MsgSenderCtx.send', (done) => {
     const msgBody = { a: 1, b: 2, c: { b: 3 } };
 
     const msgSender: MsgSender = (msg) => {
@@ -16,7 +16,7 @@ describe("MsgSenderCtx", () => {
     msgSenderCtx.send(msgBody);
   });
 
-  test("[Error: circular structure] MsgSenderCtx.send", () => {
+  test('[Error: circular structure] MsgSenderCtx.send', () => {
     // circular structure
     const a = {} as any;
     const b = { x: a };
@@ -27,9 +27,9 @@ describe("MsgSenderCtx", () => {
 
     try {
       msgSenderCtx.send(a);
-      throw new Error("ok");
+      throw new Error('ok');
     } catch (error) {
-      expect(String(error)).toMatch("ok");
+      expect(String(error)).toMatch('ok');
     }
   });
 });

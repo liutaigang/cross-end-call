@@ -1,9 +1,9 @@
-import { Subject } from "rxjs";
-import { MsgReceiver, MsgHandler } from "@/domain/msg-receiver";
-import { CrossEndCall } from "@/cross-end-call";
-import { Deferred } from "@/util/deferred";
+import { Subject } from 'rxjs';
+import { MsgReceiver, MsgHandler } from '@/domain/msg-receiver';
+import { CrossEndCall } from '@/cross-end-call';
+import { Deferred } from '@/util/deferred';
 
-describe("CorssEndCall", () => {
+describe('CorssEndCall', () => {
   let messageBus: Subject<any>;
   let msgSender: MsgHandler;
   let msgReceiver: MsgReceiver;
@@ -20,35 +20,35 @@ describe("CorssEndCall", () => {
     };
   });
 
-  test("[Normal] CorssEndCall", (done) => {
+  test('[Normal] CorssEndCall', (done) => {
     const replyEnd = new CrossEndCall(msgSender, msgReceiver);
-    replyEnd.reply("onCallMothed", (msg) => {
+    replyEnd.reply('onCallMothed', (msg) => {
       return Promise.resolve({ isAns: true, data: msg });
     });
 
     const callEnd = new CrossEndCall(msgSender, msgReceiver);
-    callEnd.call("onCallMothed", "Hello CorssEndCall").then((res: any) => {
+    callEnd.call('onCallMothed', 'Hello CorssEndCall').then((res: any) => {
       expect(res.isAns).toBeTruthy();
       done();
     });
   });
 
-  test("[Normal: not return Promise] CorssEndCall", (done) => {
+  test('[Normal: not return Promise] CorssEndCall', (done) => {
     const replyEnd = new CrossEndCall(msgSender, msgReceiver);
-    replyEnd.reply("onCallMothed", () => {
-      return "string";
+    replyEnd.reply('onCallMothed', () => {
+      return 'string';
     });
 
     const callEnd = new CrossEndCall(msgSender, msgReceiver);
-    callEnd.call("onCallMothed", "Hello CorssEndCall").then((res: any) => {
-      expect(res).toEqual("string");
+    callEnd.call('onCallMothed', 'Hello CorssEndCall').then((res: any) => {
+      expect(res).toEqual('string');
       done();
     });
   });
 
-  test("[Normal: mutli args] CorssEndCall", (done) => {
+  test('[Normal: mutli args] CorssEndCall', (done) => {
     const replyEnd = new CrossEndCall(msgSender, msgReceiver);
-    replyEnd.reply("onCallMothed", (arg1: string, arg2: string) => {
+    replyEnd.reply('onCallMothed', (arg1: string, arg2: string) => {
       return {
         isAns: true,
         arg1,
@@ -57,17 +57,17 @@ describe("CorssEndCall", () => {
     });
 
     const callEnd = new CrossEndCall(msgSender, msgReceiver);
-    callEnd.call("onCallMothed", "a", "b").then((res: any) => {
-      expect(res.arg2).toMatch("b");
+    callEnd.call('onCallMothed', 'a', 'b').then((res: any) => {
+      expect(res.arg2).toMatch('b');
       done();
     });
   });
 
-  test("[Timeout] CorssEndCall", (done) => {
+  test('[Timeout] CorssEndCall', (done) => {
     const REPLY_WAIT_TIME = 1000;
     const CALL_TIMEOUT = 999;
     const replyEnd = new CrossEndCall(msgSender, msgReceiver);
-    replyEnd.reply("onCallMothed", (msg) => {
+    replyEnd.reply('onCallMothed', (msg) => {
       const { resolve, promise } = new Deferred();
       setTimeout(() => {
         resolve({ isAns: true, data: msg });
@@ -78,21 +78,21 @@ describe("CorssEndCall", () => {
     const callEnd = new CrossEndCall(msgSender, msgReceiver, {
       timeout: CALL_TIMEOUT,
     });
-    callEnd.call("onCallMothed", "Hello CorssEndCall").catch((err: any) => {
-      expect(err.toString()).toMatch("timeout");
+    callEnd.call('onCallMothed', 'Hello CorssEndCall').catch((err: any) => {
+      expect(err.toString()).toMatch('timeout');
       done();
     });
   });
 
-  test("[Error: without handler] CorssEndCall", (done) => {
+  test('[Error: without handler] CorssEndCall', (done) => {
     const replyEnd = new CrossEndCall(msgSender, msgReceiver);
-    replyEnd.reply("onCallMothed", () => {
+    replyEnd.reply('onCallMothed', () => {
       return Promise.resolve();
     });
 
     const callEnd = new CrossEndCall(msgSender, msgReceiver);
-    callEnd.call("_", "Hello CorssEndCall").catch((err: any) => {
-      expect(err.toString()).toMatch("not have a corresponding handler");
+    callEnd.call('_', 'Hello CorssEndCall').catch((err: any) => {
+      expect(err.toString()).toMatch('not have a corresponding handler');
       done();
     });
   });

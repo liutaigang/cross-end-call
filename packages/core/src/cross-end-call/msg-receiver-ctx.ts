@@ -1,5 +1,5 @@
-import { parse } from "flatted";
-import { MsgHandler, MsgReceiver } from "@/domain/msg-receiver";
+import { parse } from 'flatted';
+import { MsgHandler, MsgReceiver } from '@/domain/msg-receiver';
 
 export class MsgReceiverCtx {
   constructor(private receiver: MsgReceiver) {}
@@ -9,7 +9,7 @@ export class MsgReceiverCtx {
       try {
         handler.call({}, parse(msg));
       } catch (error: any) {
-        throw new Error("[Receive message parse failed]: " + error.toString());
+        throw new Error('[Receive message parse failed]: ' + error.toString());
       }
     });
   };

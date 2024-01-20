@@ -1,9 +1,9 @@
-import { stringify, parse } from "flatted";
-import { MsgReceiverCtx } from "@/cross-end-call/msg-receiver-ctx";
-import { MsgReceiver, MsgHandler } from "@/domain/msg-receiver";
+import { stringify, parse } from 'flatted';
+import { MsgReceiverCtx } from '@/cross-end-call/msg-receiver-ctx';
+import { MsgReceiver, MsgHandler } from '@/domain/msg-receiver';
 
-describe("MsgReceiveCtx", () => {
-  test("[Normal] MsgReceiveCtx::receive", (done) => {
+describe('MsgReceiveCtx', () => {
+  test('[Normal] MsgReceiveCtx::receive', (done) => {
     const testObjStr = stringify({ a: 1, b: 2, c: { b: 3 } });
 
     const msgReceiver: MsgReceiver = (msgHandler: MsgHandler) => {
@@ -17,7 +17,7 @@ describe("MsgReceiveCtx", () => {
     });
   });
 
-  test("[Error] MsgReceiveCtx::receive", async () => {
+  test('[Error] MsgReceiveCtx::receive', async () => {
     const cannotPrase = { a: 1, b: 2, c: { b: 3 } };
 
     const msgReceiver: MsgReceiver = (msgHandler: MsgHandler) => {
@@ -29,7 +29,7 @@ describe("MsgReceiveCtx", () => {
       msgReceiveCtx.receive(() => {});
       throw new Error();
     } catch (error) {
-      expect(String(error)).toMatch("[Receive message parse failed]");
+      expect(String(error)).toMatch('[Receive message parse failed]');
     }
   });
 });

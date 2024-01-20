@@ -1,7 +1,7 @@
-import { InjectionToken, container } from "tsyringe";
-import { CallHandler } from "cec-core";
-import { SubscribleHandler } from "../../cec-server";
-import { Constructor } from "../domain/decotator.interface";
+import { InjectionToken, container } from 'tsyringe';
+import { CallHandler } from 'cec-core';
+import { SubscribleHandler } from '../../cec-server';
+import { Constructor } from '../domain/decotator.interface';
 
 export type ControllerConfig = {
   callables: {
@@ -34,10 +34,7 @@ function getDefaultInfo() {
   };
 }
 
-export function setControllerName(
-  controller: Constructor,
-  controllerName: NameOptions
-) {
+export function setControllerName(controller: Constructor, controllerName: NameOptions) {
   if (!controllerRecordMap.has(controller)) {
     controllerRecordMap.set(controller, getDefaultInfo());
   }
@@ -45,10 +42,7 @@ export function setControllerName(
   controllerRecordMap.set(controller, { ...currentValue, controllerName });
 }
 
-export function setCallableName(
-  controller: Constructor,
-  callableName: NameOptions
-) {
+export function setCallableName(controller: Constructor, callableName: NameOptions) {
   if (!controllerRecordMap.has(controller)) {
     controllerRecordMap.set(controller, getDefaultInfo());
   }
@@ -56,10 +50,7 @@ export function setCallableName(
   currentValue.callableNames.push(callableName);
 }
 
-export function setSubscribableName(
-  controller: Constructor,
-  subscribableName: NameOptions
-) {
+export function setSubscribableName(controller: Constructor, subscribableName: NameOptions) {
   if (!controllerRecordMap.has(controller)) {
     controllerRecordMap.set(controller, getDefaultInfo());
   }
@@ -77,31 +68,17 @@ export function registerControllers(controllerRegistry: InjectionToken<any>[]) {
   const callables: { [name: string]: CallHandler } = {};
   const subscribables: { [name: string]: SubscribleHandler } = {};
 
-  for (const [
-    constructor,
-    { controllerName, callableNames, subscribableNames },
-  ] of controllerRecords) {
+  for (const [constructor, { controllerName, callableNames, subscribableNames }] of controllerRecords) {
     const { name: contrName, aliasName: contrAliasName } = controllerName;
     const instance = container.resolve(constructor) as any;
     for (const { name: callName, aliasName: callAliasName } of callableNames) {
-      const callHandler: CallHandler = (instance[callName] as Function)?.bind(
-        instance
-      );
-      const callHandlerName = `${contrAliasName ?? contrName}.${
-        callAliasName ?? callName
-      }`;
+      const callHandler: CallHandler = (instance[callName] as Function)?.bind(instance);
+      const callHandlerName = `${contrAliasName ?? contrName}.${callAliasName ?? callName}`;
       callables[callHandlerName] = callHandler;
     }
-    for (const {
-      name: subscName,
-      aliasName: subscAliasName,
-    } of subscribableNames) {
-      const subscribleHandler: SubscribleHandler = (
-        instance[subscName] as Function
-      )?.bind(instance);
-      const subscribleHandlerName = `${contrAliasName ?? contrName}.${
-        subscAliasName ?? subscName
-      }`;
+    for (const { name: subscName, aliasName: subscAliasName } of subscribableNames) {
+      const subscribleHandler: SubscribleHandler = (instance[subscName] as Function)?.bind(instance);
+      const subscribleHandlerName = `${contrAliasName ?? contrName}.${subscAliasName ?? subscName}`;
       subscribables[subscribleHandlerName] = subscribleHandler;
     }
   }
@@ -111,7 +88,7 @@ export function registerControllers(controllerRegistry: InjectionToken<any>[]) {
 
 export function getControllers() {
   if (!controllerConfig) {
-    throw Error("should to register controllers firstly, please");
+    throw Error('should to register controllers firstly, please');
   }
   return controllerConfig;
 }

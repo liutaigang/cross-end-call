@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { RouterLink, RouterView } from 'vue-router'
-import { useWebviewPublicPath } from '@/hooks/use-webview-public-path'
+import { RouterLink, RouterView } from 'vue-router';
+import { useWebviewPublicPath } from '@/hooks/use-webview-public-path';
 import { useCall } from './hooks/use-cec-client';
-import logPath from '@/assets/logo.svg'
+import logPath from '@/assets/logo.svg';
 
-const logoUrl = useWebviewPublicPath(logPath)
-const message = ref('')
-
+const logoUrl = useWebviewPublicPath(logPath);
+const message = ref('');
 </script>
 
 <template>

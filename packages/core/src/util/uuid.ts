@@ -1,13 +1,12 @@
 export function uuid(len?: number, radix = 62) {
-  const chars =
-    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
   const uuid = [];
 
   if (len) {
     for (let i = 0; i < len; i++) uuid[i] = chars[0 | (Math.random() * radix)];
   } else {
-    uuid[8] = uuid[13] = uuid[18] = uuid[23] = "-";
-    uuid[14] = "4";
+    uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+    uuid[14] = '4';
     for (let i = 0; i < 36; i++) {
       if (!uuid[i]) {
         const r = 0 | (Math.random() * 16);
@@ -16,5 +15,5 @@ export function uuid(len?: number, radix = 62) {
     }
   }
 
-  return uuid.join("");
+  return uuid.join('');
 }

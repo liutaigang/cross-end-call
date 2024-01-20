@@ -1,10 +1,4 @@
-import {
-  CecConfig,
-  CrossEndCall,
-  MsgReceiver,
-  MsgSender,
-  ReplyReception,
-} from "cec-core";
+import { CecConfig, CrossEndCall, MsgReceiver, MsgSender, ReplyReception } from 'cec-core';
 
 export type SubscribleCancel = () => void;
 export type MsgObserver = (value: any) => void;
@@ -27,24 +21,16 @@ export class CecClient {
   constructor(
     private msgSender: MsgSender,
     private msgReceiver: MsgReceiver,
-    private config?: CecConfig
+    private config?: CecConfig,
   ) {
-    this.crossEndCall = new CrossEndCall(
-      this.msgSender,
-      this.msgReceiver,
-      this.config
-    );
+    this.crossEndCall = new CrossEndCall(this.msgSender, this.msgReceiver, this.config);
   }
 
   call<ReplyVal = any>(name: string, ...args: any[]): Promise<ReplyVal> {
     return this.crossEndCall.call(name, ...args);
   }
 
-  subscrible(
-    name: string,
-    observer: MsgObserver,
-    ...args: any[]
-  ): SubscribleCancel {
+  subscrible(name: string, observer: MsgObserver, ...args: any[]): SubscribleCancel {
     let subscribleCancel = () => {};
 
     const toSubsscrible = (subscribeId: string) => {

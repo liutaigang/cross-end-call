@@ -1,18 +1,18 @@
-import { CrossEndCall, MsgSender, MsgReceiver, CallHandler } from "cec-core";
-import { uuid } from "./util/uuid";
+import { CrossEndCall, MsgSender, MsgReceiver, CallHandler } from 'cec-core';
+import { uuid } from './util/uuid';
 
 export type OnCallCancel = () => void;
 export type OnSubscribeCancel = () => void;
-export type SubscribleHandler = (
-  next: (value: any) => void,
-  ...args: any[]
-) => OnSubscribeCancel;
+export type SubscribleHandler = (next: (value: any) => void, ...args: any[]) => OnSubscribeCancel;
 
 export class CecServer {
   static CALL_MSG_CACHE_DELAY = 64;
   private crossEndCall: CrossEndCall;
 
-  constructor(private msgSender: MsgSender, private msgReceiver: MsgReceiver) {
+  constructor(
+    private msgSender: MsgSender,
+    private msgReceiver: MsgReceiver,
+  ) {
     this.crossEndCall = new CrossEndCall(this.msgSender, this.msgReceiver);
   }
 
@@ -21,10 +21,7 @@ export class CecServer {
     return reception.cancelReply;
   }
 
-  onSubscribe(
-    name: string,
-    subscribleHandler: SubscribleHandler
-  ): OnSubscribeCancel {
+  onSubscribe(name: string, subscribleHandler: SubscribleHandler): OnSubscribeCancel {
     const onSubscribeCancelMap: Map<string, OnSubscribeCancel> = new Map();
     const callMsgCache = new Set<any>();
     let callMsgCacheTimer: any = -1;
@@ -56,10 +53,7 @@ export class CecServer {
         onSubscribeCancel.call({});
       }
     };
-    const receptionCancel = this.crossEndCall.reply(
-      forSubscribleCancel,
-      subscribleCancelHandler
-    );
+    const receptionCancel = this.crossEndCall.reply(forSubscribleCancel, subscribleCancelHandler);
 
     return () => {
       reception.cancelReply();

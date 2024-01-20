@@ -1,5 +1,5 @@
-import { stringify } from "flatted";
-import { MsgSender } from "@/domain/msg-sender";
+import { stringify } from 'flatted';
+import { MsgSender } from '@/domain/msg-sender';
 
 export class MsgSenderCtx {
   constructor(private sender: MsgSender) {}
@@ -8,7 +8,7 @@ export class MsgSenderCtx {
     try {
       this.sender.call({}, stringify(msg));
     } catch (error: any) {
-      throw new Error("[Send message stringify failed]: " + error.toString());
+      throw new Error('[Send message stringify failed]: ' + error.toString());
     }
   };
 }
