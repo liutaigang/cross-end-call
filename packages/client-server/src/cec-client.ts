@@ -9,6 +9,11 @@ import {
 export type SubscribleCancel = () => void;
 export type MsgObserver = (value: any) => void;
 
+type SubscribleValue = {
+  subscribeValue: any;
+  subscribeId: string;
+};
+
 export class CecClient {
   private crossEndCall: CrossEndCall;
   private observerMap: Map<
@@ -46,12 +51,7 @@ export class CecClient {
       if (this.observerMap.has(name)) {
         this.observerMap.get(name)?.observers.set(subscribeId, observer);
       } else {
-        const notifyAllObservers = (
-          values: {
-            subscribeValue: any;
-            subscribeId: string;
-          }[]
-        ) => {
+        const notifyAllObservers = (values: SubscribleValue[]) => {
           for (const { subscribeValue, subscribeId } of values) {
             const observersMap = this.observerMap.get(name)?.observers;
             observersMap?.get(subscribeId)?.call({}, subscribeValue);
@@ -65,24 +65,30 @@ export class CecClient {
       }
 
       subscribleCancel = () => {
-        if (this.observerMap.has(name)) {
-          const observers = this.observerMap.get(name)?.observers;
-          if (observers) observers.delete(subscribeId);
-          if (observers?.size === 0) {
-            this.observerMap.get(name)?.reception.cancelReply();
-            this.observerMap.delete(name);
+        if (!this.observerMap.has(name)) return;
+
+        const observers = this.observerMap.get(name)?.observers!;
+        if (observers?.size > 0) {
+          if (observers.delete(subscribeId)) {
+            const forSubscribleCancel = `${name}.forSubscribleCancel`;
+            this.crossEndCall.call(forSubscribleCancel, subscribeId);
           }
+        }
+        if (observers?.size === 0) {
+          this.observerMap.get(name)?.reception.cancelReply();
+          this.observerMap.delete(name);
         }
       };
     };
 
     const forSubscrible = `${name}.forSubscrible`;
-    const callPromse = this.crossEndCall.call(forSubscrible, args);
-    callPromse.then((subscribeId) => toSubsscrible(subscribeId as string));
+    const callPromse = this.crossEndCall.call<string>(forSubscrible, args);
+    callPromse.then((subscribeId: string) => toSubsscrible(subscribeId));
 
     return async () => {
       await callPromse;
       subscribleCancel();
+      subscribleCancel = () => {};
     };
   }
 }

@@ -9,7 +9,9 @@ describe("CorssEndCall", () => {
   beforeEach(() => {
     const messageBus = new Subject();
     const msgSender = (msg: any) => {
-      messageBus.next(msg);
+      setTimeout(() => {
+        messageBus.next(msg);
+      }, 10);
     };
     const msgReceiver = (next: any) => {
       messageBus.asObservable().subscribe({ next });
@@ -137,7 +139,7 @@ describe("CorssEndCall", () => {
       (value) => {
         expect(value).toEqual(name + args01.join(""));
       },
-      ...args01
+      ...args01,
     );
 
     const args02 = ["x", "y", "z"];
@@ -147,7 +149,27 @@ describe("CorssEndCall", () => {
         expect(value).toEqual(name + args02.join(""));
         setTimeout(done);
       },
-      ...args02
+      ...args02,
     );
+  });
+
+  test("[Subscribe cancel] CorssEndCall Server/Client in Subscribe", (done) => {
+    const name = "notify";
+    let isCancel = false;
+
+    cecServer.onSubscribe(name, (next) => {
+      const timer = setTimeout(next, 1000);
+      return () => {
+        isCancel = true;
+        clearTimeout(timer);
+      };
+    });
+
+    const subscribeCancel = cecClient.subscrible(name, () => {});
+    subscribeCancel();
+    setTimeout(() => {
+      expect(isCancel).toBeTruthy();
+      done();
+    }, 500);
   });
 });

@@ -9,7 +9,7 @@ export type SubscribleHandler = (
 ) => OnSubscribeCancel;
 
 export class CecServer {
-  static CALL_MSG_CACHE_DELAY = 32;
+  static CALL_MSG_CACHE_DELAY = 64;
   private crossEndCall: CrossEndCall;
 
   constructor(private msgSender: MsgSender, private msgReceiver: MsgReceiver) {
@@ -25,16 +25,15 @@ export class CecServer {
     name: string,
     subscribleHandler: SubscribleHandler
   ): OnSubscribeCancel {
-    const onSubscribeCancelList: OnSubscribeCancel[] = [];
+    const onSubscribeCancelMap: Map<string, OnSubscribeCancel> = new Map();
     const callMsgCache = new Set<any>();
     let callMsgCacheTimer: any = -1;
 
     const callHandler: CallHandler = (args: any[]) => {
       const subscribeId = uuid();
 
-      const next = async (subscribeValue: any) => {
+      const publisher = async (subscribeValue: any) => {
         callMsgCache.add({ subscribeId, subscribeValue });
-
         clearTimeout(callMsgCacheTimer);
         callMsgCacheTimer = setTimeout(() => {
           this.crossEndCall.call(name, Array.from(callMsgCache));
@@ -42,17 +41,30 @@ export class CecServer {
         }, CecServer.CALL_MSG_CACHE_DELAY);
       };
 
-      const onSubscribeCancel = subscribleHandler.call({}, next, ...args);
-      onSubscribeCancelList.push(onSubscribeCancel);
+      const onSubscribeCancel = subscribleHandler.call({}, publisher, ...args);
+      onSubscribeCancelMap.set(subscribeId, onSubscribeCancel);
       return subscribeId;
     };
-
     const forSubscrible = `${name}.forSubscrible`;
     const reception = this.crossEndCall.reply(forSubscrible, callHandler);
 
+    const forSubscribleCancel = `${name}.forSubscribleCancel`;
+    const subscribleCancelHandler = (subscribeId: string) => {
+      const onSubscribeCancel = onSubscribeCancelMap.get(subscribeId);
+      if (onSubscribeCancel) {
+        onSubscribeCancelMap.delete(subscribeId);
+        onSubscribeCancel.call({});
+      }
+    };
+    const receptionCancel = this.crossEndCall.reply(
+      forSubscribleCancel,
+      subscribleCancelHandler
+    );
+
     return () => {
       reception.cancelReply();
-      onSubscribeCancelList.forEach((cancel) => cancel.call({}));
+      receptionCancel.cancelReply();
+      onSubscribeCancelMap.forEach((cancel) => cancel.call({}));
     };
   }
 }
