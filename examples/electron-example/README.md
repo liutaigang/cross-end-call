@@ -1,6 +1,6 @@
 # Electron 进程间通信——基于 cec-client-server 实现
 
-![](D:\AAAAA\self\cross-end-call\examples\electron-example\docs\images\ipc-cec.png)
+![](https://raw.githubusercontent.com/liutaigang/cross-end-call/main/examples/electron-example/docs/images/ipc-cec.png)
 
 ## 简介
 
@@ -10,7 +10,7 @@
 - 实用：比 [`ipcRenderer.invoke`](https://www.electronjs.org/zh/docs/latest/api/ipc-renderer#ipcrendererinvokechannel-args) / [`ipcMain.handle`](https://www.electronjs.org/zh/docs/latest/api/ipc-main#ipcmainhandlechannel-listener) 的方式更强大
 - 安全：[remote](https://github.com/electron/remote) 模块虽然功能强大，但是安全、性能是令人担忧的，cec-client-server 是基于 [`ipcMain.on`](https://www.electronjs.org/zh/docs/latest/api/ipc-main) / [`ipcRenderer.send`](https://www.electronjs.org/zh/docs/latest/api/ipc-renderer) ，安全有保证。**要注意的是**：这里仅比较两者在通讯方面的能力，cec-client-server 不具备代替 remote 的能力
 
-项目地址：
+项目地址：https://github.com/liutaigang/cross-end-call/tree/main/examples/electron-example
 
 ## 实现
 
@@ -26,7 +26,7 @@
 └── package.json
 ```
 
-**main.ts** 主要逻辑：
+**[main.ts](https://github.com/liutaigang/cross-end-call/blob/main/examples/electron-example/src/main.ts)** 主要逻辑：
 
 ```ts
 import { join } from 'path';
@@ -61,7 +61,7 @@ function initCecServer({ webContents }: BrowserWindow) {
 }
 ```
 
-**preload.ts** 主要逻辑：
+**[preload.ts](https://github.com/liutaigang/cross-end-call/blob/main/examples/electron-example/src/preload.ts)** 主要逻辑：
 
 ```ts
 import { MsgHandler } from 'cec-client-server';
@@ -81,7 +81,7 @@ contextBridge.exposeInMainWorld('electronMesssageAPI', {
 
 ```
 
-**renderer.ts** 主要逻辑：
+**[renderer.ts](https://github.com/liutaigang/cross-end-call/blob/main/examples/electron-example/src/renderer.ts)** 主要逻辑：
 
 ```ts
 import { CecClient } from 'cec-client-server';
@@ -96,6 +96,6 @@ electronMesssageAPI.onMessageReady(({ msgSender, msgReceiver }: any) => {
 
 ## 总结
 
-在 electron 中使用 cec-client-server，除了功能增强外，主进程和渲染进程组件之间的依赖关系也得以优化。
+在 electron 中使用 cec-client-server，除了功能增强外，主进程和渲染进程组件之间的依赖关系也得以优化
 
-cec-client-server 不依赖特定的信道，除了 ipc， scoket 等全双工的通信也是可选项。
+cec-client-server 不依赖特定的信道，除了 ipc， scoket 等全双工的通信也是可选项
