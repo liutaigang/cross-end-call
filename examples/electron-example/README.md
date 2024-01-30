@@ -1,8 +1,6 @@
-# Electron 进程间通信——基于 cec-client-server 实现
-
 ![](https://raw.githubusercontent.com/liutaigang/cross-end-call/main/examples/electron-example/docs/images/ipc-cec.png)
 
-## 简介
+# 简介
 
 [cec-client-server](https://github.com/liutaigang/cross-end-call) 使用 `调用/订阅` 的方式来实现 electron 进程间的通讯，其有以下优点：
 
@@ -12,7 +10,7 @@
 
 项目地址：https://github.com/liutaigang/cross-end-call/tree/main/examples/electron-example
 
-## 实现
+# 实现
 
 [新建一个 electron 项目](https://www.electronjs.org/zh/docs/latest/tutorial/tutorial-first-app)，目录结构：
 
@@ -94,7 +92,7 @@ electronMesssageAPI.onMessageReady(({ msgSender, msgReceiver }: any) => {
 });
 ```
 
-## 总结
+# 总结
 
 在 electron 中使用 cec-client-server，除了功能增强外，主进程和渲染进程组件之间的依赖关系也得以优化
 
