@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta content="default-src 'self'; script-src 'self'" />
+    <title>Menu Counter</title>
+  </head>
+  <body>
+    <button id="file-select-btn">请选择文件</button>
+    <br />
+    <textarea id="text-area-content" style="width: 500px; height: 150px"></textarea>
+    <br />
+    <br />
+    <strong>请尝试在其他地方修改这个文件的内容</strong>，下面将显示修改统计信息：
+    <br />
+    <textarea id="text-area-stat" style="width: 500px; height: 150px"></textarea>
+    <br />
+    <br />
+    <button id="message-btn">Dispaly Filename in MessageBox</button>
+    <script src="./out/renderer.js"></script>
+  </body>
+</html>

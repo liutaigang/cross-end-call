@@ -1,6 +1,6 @@
 {
-  "name": "simple-extension",
-  "displayName": "simple-extension",
+  "name": "vscode-extension",
+  "displayName": "vscode-extension",
   "description": "",
   "version": "0.0.1",
   "engines": {

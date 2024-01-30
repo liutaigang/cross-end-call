@@ -1,5 +1,5 @@
 {
-  "name": "simple-view-vue",
+  "name": "vscode-extension-view",
   "version": "0.0.0",
   "private": true,
   "scripts": {

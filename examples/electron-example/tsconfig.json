@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "NodeNext",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "outDir": "out",
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "paths": {
+      "*": ["node_modules/*"],
+      "tslib": ["node_modules/tslib/tslib.d.ts"]
+    },
+    "experimentalDecorators": true /* Add a polyfill for the Reflect API (examples below use reflect-metadata)  */,
+    "emitDecoratorMetadata": true /* Add a polyfill for the Reflect API (examples below use reflect-metadata). */
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/node_modules/**"]
+}
