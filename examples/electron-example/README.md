@@ -1,10 +1,8 @@
-# Electron 进程间通信——基于 cec-client-server 实现
-
 ![](https://raw.githubusercontent.com/liutaigang/cross-end-call/main/examples/electron-example/docs/images/ipc-cec.png)
 
 > 由于作者在实现 cec-client-server 的时候，并不知道 json-rpc 2.0 的这个协议。这个协议规范了 RPC 过程中的实施细则，所以，基于 json-rpc 2.0，重写了 cec-client-server，新的代码库见于：https://github.com/cross-end-call/jsonrpc-cec
 
-## 简介
+# 简介
 
 [cec-client-server](https://github.com/liutaigang/cross-end-call) 是一个用于实现“[远程过程调用](https://www.zhihu.com/search?q=远程过程调用&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A36197244})”的库，使用 TS 实现。
 
@@ -18,7 +16,7 @@
 
 项目地址：https://github.com/liutaigang/cross-end-call/tree/main/examples/electron-example
 
-## 实现
+# 实现
 
 [新建一个 electron 项目](https://www.electronjs.org/zh/docs/latest/tutorial/tutorial-first-app)，目录结构：
 
@@ -111,7 +109,7 @@ electronMesssageAPI.onMessageReady(({ msgSender, msgReceiver }: any) => {
 });
 ```
 
-## 总结
+# 总结
 
 在 electron 中使用 cec-client-server，除了功能增强外，主进程和渲染进程组件之间的依赖关系也得以优化
 
