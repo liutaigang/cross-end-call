@@ -2,7 +2,13 @@
 
 ![](https://raw.githubusercontent.com/liutaigang/cross-end-call/main/examples/electron-example/docs/images/ipc-cec.png)
 
+> 由于作者在实现 cec-client-server 的时候，并不知道 json-rpc 2.0 的这个协议。这个协议规范了 RPC 过程中的实施细则，所以，基于 json-rpc 2.0，重写了 cec-client-server，新的代码库见于：https://github.com/cross-end-call/jsonrpc-cec
+
 ## 简介
+
+[cec-client-server](https://github.com/liutaigang/cross-end-call) 是一个用于实现“[远程过程调用](https://www.zhihu.com/search?q=远程过程调用&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A36197244})”的库，使用 TS 实现。
+
+所谓的“远程过程调用”，简称 RPC，就是要像调用本地的函数一样去调“远程函数”。通俗的说：A、B 两个服务分别部署在不同的地方，A 可以像调用方法本地的函数一样去调用 B 声明好的函数。
 
 [cec-client-server](https://github.com/liutaigang/cross-end-call) 使用 `调用/订阅` 的方式来实现 electron 进程间的通讯，其有以下优点：
 
@@ -26,7 +32,15 @@
 └── package.json
 ```
 
-**[main.ts](https://github.com/liutaigang/cross-end-call/blob/main/examples/electron-example/src/main.ts)** 主要逻辑：
+electron 的通讯模式是一对多的一个模型，即：当存在多窗口时，一个主程序需要和多个窗口通讯。但是使用 cec-client-server 时，每一对 CecServer 和 CecClient 都需要一个独立的信道。于是有了以下代码：
+
+**[main.ts](https://github.com/liutaigang/cross-end-call/blob/main/examples/electron-example/src/main.ts)** 主要逻辑为：
+
+1、创建一个新的窗口实例；
+
+2、初始化 CecServer 实例；
+
+如下：
 
 ```ts
 import { join } from 'path';
@@ -46,13 +60,14 @@ app.whenReady().then(() => {
 
 function initCecServer({ webContents }: BrowserWindow) {
   // 发送/接收的消息的 channel 名称，需要保持唯一性，所以加上了 webContents.id
+  // 每一对 CecServer 和 CecClient 都需要一个独立的信道，所以新创建一个 window 时，需要新建一个 CecServer, 并使用一个唯一的 channel name 来通讯
   const sendMessageToken = 'cec-channel:send-message-' + webContents.id;
   const receiveMessageToken = 'cec-channel:receive-messag-' + webContents.id;
   
-  // 将两个 channel 的名称的同步给 preload，preload 可以通过它们和当前的 BrowserWindow 展开通讯
+  // 将两个 channel 的名称的同步给 preload.ts
   webContents.send('cec-channel:initial-message', { sendMessageToken, receiveMessageToken });
 
-  // 实例化 CecServer
+  // 实例化 CecServer: 使用唯一 channel name 建立信道, 实现 cecServer 和 cecClient 的通讯
   const msgSender = (value: any) => webContents.send(sendMessageToken, value);
   const msgReceiver = (msgHandler: MsgHandler) => ipcMain.on(receiveMessageToken, (_, value) => msgHandler(value));
   const cecServer = new CecServer(msgSender, msgReceiver);
@@ -67,13 +82,15 @@ function initCecServer({ webContents }: BrowserWindow) {
 import { MsgHandler } from 'cec-client-server';
 import { contextBridge, ipcRenderer } from 'electron/renderer';
 
-// 通过 contextBridge 暴露事件：electronMesssageAPI.onMessageReady。视图中可以通过该事件，获得通讯能力：msgSender, msgReceiver
+// 通过 contextBridge 暴露事件：electronMesssageAPI.onMessageReady 给 renderer.ts 暴露通讯能力：msgSender, msgReceiver
 contextBridge.exposeInMainWorld('electronMesssageAPI', {
   onMessageReady: (callback: (arg: any) => void) => {
     ipcRenderer.on('cec-channel:initial-message', (_, value) => {
+      // 每一对 CecServer 和 CecClient 都需要一个独立的信道，所以新建一个 window 时，需要使用一个唯一的 channel name 来建立信道
       const { sendMessageToken, receiveMessageToken } = value;
       const msgSender = (val: any) => ipcRenderer.send(receiveMessageToken, val);
       const msgReceiver = (msgHandler: MsgHandler) => ipcRenderer.on(sendMessageToken, (_, val) => msgHandler(val));
+      // 将初始化 CecClient 所需的 msgSender, msgReceiver 传递到 renderer.ts 中
       callback({ msgSender, msgReceiver });
     });
   },
@@ -88,7 +105,7 @@ import { CecClient } from 'cec-client-server';
 
 const electronMesssageAPI = (window as any).electronMesssageAPI;
 electronMesssageAPI.onMessageReady(({ msgSender, msgReceiver }: any) => {
-  // 实例化 CecClient
+  // 实例化 CecClient，通过该实例，可以与对应的窗口的 CecServer 进行通信
   const cecClient = new CecClient(msgSender, msgReceiver);
   ...
 });
